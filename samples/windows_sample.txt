@@ -1,0 +1,108 @@
+Log Name: System
+Source: Service Control Manager
+Date: 2025-02-14 09:00:01
+Event ID: 7036
+Level: Information
+Description:
+The Windows Update service entered the running state.
+
+Log Name: Application
+Source: Application Error
+Date: 2025-02-14 09:01:12
+Event ID: 1000
+Level: Error
+Description:
+Faulting application name: notesync.exe, version 3.1.0.0, faulting module: kernel32.dll
+
+Log Name: System
+Source: Disk
+Date: 2025-02-14 09:01:55
+Event ID: 51
+Level: Warning
+Description:
+An error was detected on device \Device\Harddisk0\DR0 during a paging operation.
+
+Log Name: Security
+Source: Microsoft-Windows-Security-Auditing
+Date: 2025-02-14 09:02:14
+Event ID: 4625
+Level: Error
+Description:
+An account failed to log on.
+Account Name: Administrator
+Failure Reason: Unknown user name or bad password
+
+Log Name: System
+Source: Tcpip
+Date: 2025-02-14 09:03:01
+Event ID: 4201
+Level: Warning
+Description:
+The system detected a network disconnection.
+
+Log Name: System
+Source: Schannel
+Date: 2025-02-14 09:03:05
+Event ID: 36887
+Level: Error
+Description:
+A fatal alert was received from the remote endpoint.
+
+Log Name: Security
+Source: Microsoft-Windows-Security-Auditing
+Date: 2025-02-14 09:04:03
+Event ID: 5152
+Level: Error
+Description:
+The Windows Filtering Platform blocked a packet.
+Blocked application: C:\Windows\System32\cmd.exe
+Remote Address: 185.221.102.91
+
+Log Name: Application
+Source: Winlogon
+Date: 2025-02-14 09:04:20
+Event ID: 6008
+Level: Warning
+Description:
+Unexpected shutdown occurred.
+
+Log Name: System
+Source: Service Control Manager
+Date: 2025-02-14 09:05:00
+Event ID: 7036
+Level: Information
+Description:
+The Themes service entered the running state.
+
+Log Name: System
+Source: Kernel-General
+Date: 2025-02-14 09:05:44
+Event ID: 1
+Level: Warning
+Description:
+The system time has changed unexpectedly.
+
+Log Name: Security
+Source: Microsoft-Windows-Security-Auditing
+Date: 2025-02-14 09:07:22
+Event ID: 5038
+Level: Error
+Description:
+Code Integrity determined that the image hash of a file is not valid.
+File Name: C:\Temp\scan_worker.exe
+
+Log Name: Application
+Source: Windows Error Reporting
+Date: 2025-02-14 09:09:10
+Event ID: 1001
+Level: Information
+Description:
+Fault bucket type: 0, Reported for unexpected thread termination.
+
+Log Name: System
+Source: Kernel-Power
+Date: 2025-02-14 09:10:00
+Event ID: 507
+Level: Information
+Description:
+System monitoring routine completed.

@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card fade-in">
+
+    <h2>Analysis Results</h2>
+
+    <p class="text-muted" style="margin-bottom: var(--space-md);">
+        Review categorized findings, explanations, and export options.
+    </p>
+
+    <!-- SUMMARY -->
+    <div class="summary-row" style="display:flex; gap: var(--space-md); margin-bottom: var(--space-lg);">
+        <div class="summary-pill">Errors: <span id="summary-errors">0</span></div>
+        <div class="summary-pill">Warnings: <span id="summary-warnings">0</span></div>
+        <div class="summary-pill">Info: <span id="summary-info">0</span></div>
+        <div class="summary-pill">Suspicious: <span id="summary-suspicious">0</span></div>
+        <div class="summary-pill">Total: <span id="results-total">0</span></div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="action-row results-controls" style="margin-bottom: var(--space-lg);">
+        <select id="filter-severity" class="select-small">
+            <option value="all">All</option>
+            <option value="high">Errors</option>
+            <option value="moderate">Warnings</option>
+            <option value="low">Info</option>
+        </select>
+
+        <input id="results-search" type="text" class="input-search" placeholder="Search…">
+
+        <button id="toggle-simplified" class="btn-secondary">Simplified: Off</button>
+
+        <div class="dropdown">
+            <button id="export-btn" class="btn-secondary">Export</button>
+            <div id="export-options" class="dropdown-menu hidden">
+                <button class="dropdown-item" data-format="txt">TXT</button>
+                <button class="dropdown-item" data-format="json">JSON</button>
+                <button class="dropdown-item" data-format="csv">CSV</button>
+            </div>
+        </div>
+
+        <button id="download-original" class="btn-secondary">Raw</button>
+        <button id="collapse-all" class="btn-secondary">Collapse all</button>
+        <button id="expand-all" class="btn-secondary">Expand all</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results-list" class="results-list"></div>
+
+    <!-- HIDDEN RAW ENTRIES -->
+    <script id="initial-entries" type="application/json">
+        {{ entries|tojson }}
+    </script>
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer">
+        <p>Pattern matching only. Results do not confirm vulnerabilities, infections, or security incidents.</p>
+        <p>Nothing leaves this machine. Results are stored in RAM and gone when the app restarts.</p>
+        <p>If something looks serious, ask someone who knows the system.</p>
+    </div>
+
+</div>
+
+{% endblock %}

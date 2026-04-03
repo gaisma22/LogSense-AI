@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card fade-in">
+
+    <h2>Upload Log File (Max: 15 MB)</h2>
+
+    <p class="text-muted" style="margin-bottom: var(--space-md);">
+        Supported: .log, .txt, .xml
+    </p>
+
+    <div id="upload-zone" class="upload-zone">
+        Click or drag a file here
+    </div>
+
+    <div id="file-info" class="file-info hidden">
+        <strong>Name:</strong> <span id="fi-name"></span><br>
+        <strong>Size:</strong> <span id="fi-size"></span><br>
+        <strong>Type:</strong> <span id="fi-type"></span>
+    </div>
+
+    <p id="upload-error" class="text-muted" style="color: var(--c-danger); margin-top: var(--space-sm);"></p>
+
+    <div class="action-row" style="margin-top: var(--space-lg);">
+        <button id="btn-discard" class="btn-secondary hidden">Clear</button>
+    </div>
+
+    <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data" class="hidden" style="margin-top: var(--space-md);">
+        <input id="file-input" name="file" type="file" class="hidden">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn-primary">Analyze</button>
+    </form>
+
+</div>
+
+{% endblock %}

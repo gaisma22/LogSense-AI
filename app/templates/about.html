@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="page-container">
+
+    <section class="page-section">
+        <h1>About LogSense AI</h1>
+        <p class="text-muted">
+            LogSense AI is a local log analysis tool with Android live monitoring. It runs entirely on your machine. No cloud, no accounts.
+        </p>
+    </section>
+
+    <section class="page-section">
+        <h2>Core Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Log Analysis</h3>
+                <p class="text-muted">Upload a log file and get line-by-line severity classification, pattern matching, and export.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Android ADB Monitoring</h3>
+                <p class="text-muted">Connect an Android device via USB and stream live logcat output directly into the browser.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Responsive UI</h3>
+                <p class="text-muted">Works in dark and light mode. Built with plain HTML, CSS, and JS. No frameworks.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="page-section">
+        <h2>Architecture Overview</h2>
+
+        <ul class="bullet-list">
+            <li>Flask backend with blueprint routing</li>
+            <li>Rule-based log parser with pattern matching</li>
+            <li>ADB device layer with lazy daemon startup</li>
+            <li>Server-Sent Events for live log streaming</li>
+            <li>In-RAM session store with automatic cleanup</li>
+        </ul>
+    </section>
+
+    <section class="page-section">
+        <h2>Purpose</h2>
+        <p class="text-muted">
+            Most people never look at logs because they’re hard to read. LogSense AI shows what stands out. It does not recommend actions, deletions, or fixes.
+        </p>
+    </section>
+
+</div>
+
+<style>
+    .page-container {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: var(--space-xl) var(--space-lg);
+    }
+
+    /* Keep page-section spacing untouched (strict condition) */
+
+    /* Apply global dynamic card/grid UI by removing unsafe overrides */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-lg);
+        margin-top: var(--space-md);
+    }
+
+    .feature-card {
+        background: var(--c-bg-card);
+        padding: var(--space-md);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--c-border);
+        transition: transform 0.15s ease;
+        font-size: 0.85rem;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-2px); /* global micro-lift */
+    }
+
+    .bullet-list {
+        margin-top: var(--space-md);
+        line-height: 1.8;
+    }
+</style>
+
+{% endblock %}

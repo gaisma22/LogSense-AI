@@ -1,0 +1,30 @@
+02-14 09:00:00.001 I SystemServer: System boot completed
+02-14 09:00:02.113 I ActivityManager: Start user session for user 0 (alex)
+02-14 09:00:05.331 D NetworkMonitor: Connected to wifi network
+02-14 09:00:10.331 I BatteryStatsService: Battery stable
+
+02-14 09:01:01.221 W FileService: File read delay exceeded threshold
+02-14 09:01:05.244 E NotesSync: Failed to load preference cache
+02-14 09:01:12.331 W ResourceManager: High memory usage detected in process com.photo.edit
+
+02-14 09:02:03.115 E NetworkManager: Connection refused by remote host
+02-14 09:02:06.661 W NetworkMonitor: Unexpected timeout contacting 192.168.1.21
+
+02-14 09:03:01.221 E SecurityManager: Unauthorized access attempt detected
+02-14 09:03:03.776 E FileAccess: Access denied /data/system/users/0/settings_secure.xml
+02-14 09:03:06.551 W SystemService: suspicious keyword detected in header
+02-14 09:03:09.332 A MalwareScanner: ALERT suspicious process started: com.xscan.worker
+02-14 09:03:13.448 A MalwareScanner: Possible malware signature found in /data/local/tmp
+
+02-14 09:04:01.223 I SystemServer: Routine background task completed
+02-14 09:04:03.114 I BatteryStatsService: System metrics updated
+
+02-14 09:05:10.441 W NetworkMonitor: Packet loss detected on wlan0
+02-14 09:05:12.881 E SyncManager: Failed to sync directory /data/user/0/com.cache.app/files
+
+02-14 09:06:03.201 W AppOps: Unusual delay in app com.cache.sync
+
+02-14 09:07:05.881 E WorkerManager: Worker thread terminated unexpectedly
+02-14 09:07:07.114 I WorkerManager: Worker thread restarted successfully
+
+02-14 09:08:00.441 I SystemServer: End of log summary
