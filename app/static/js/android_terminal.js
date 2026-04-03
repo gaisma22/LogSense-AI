@@ -238,7 +238,45 @@
     root.setAttribute('data-theme', ui.theme);
     localStorage.setItem(THEME_KEY, ui.theme);
     btnTheme.textContent = ui.theme === 'dark' ? 'Day' : 'Night';
+    if (ui.inspectorOpen && ui.selectedEntry) {
+      const wrap = inspBodyEl.querySelector('.lsa-timeline-wrap');
+      if (wrap) {
+        const d = document.createElement('div');
+        d.innerHTML = buildTimeline(ui.selectedEntry);
+        const n = d.querySelector('.lsa-timeline-wrap');
+        if (n) { wrap.replaceWith(n); wireTimeline(inspBodyEl); }
+      }
+    }
   };
+
+  root.addEventListener('lsa-rebuild-timeline', () => {
+    requestAnimationFrame(() => {
+      if (ui.inspectorOpen && ui.selectedEntry) {
+        const wrap = inspBodyEl.querySelector('.lsa-timeline-wrap');
+        if (wrap) {
+          const d = document.createElement('div');
+          d.innerHTML = buildTimeline(ui.selectedEntry);
+          const n = d.querySelector('.lsa-timeline-wrap');
+          if (n) {
+            wrap.replaceWith(n);
+            wireTimeline(inspBodyEl);
+            if (window._timelineInterval) {
+              clearInterval(window._timelineInterval);
+              window._timelineInterval = setInterval(() => {
+                if (!ui.inspectorOpen) { clearInterval(window._timelineInterval); return; }
+                const w = inspBodyEl.querySelector('.lsa-timeline-wrap');
+                if (!w) return;
+                const d2 = document.createElement('div');
+                d2.innerHTML = buildTimeline(ui.selectedEntry);
+                const n2 = d2.querySelector('.lsa-timeline-wrap');
+                if (n2) { w.replaceWith(n2); wireTimeline(inspBodyEl); }
+              }, 3000);
+            }
+          }
+        }
+      }
+    });
+  });
 
   /* ------------------------------------------------------------------ */
   /* LEVEL FILTER BUTTONS                                                */
@@ -457,6 +495,108 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* TIMELINE                                                            */
+  /* ------------------------------------------------------------------ */
+  function buildTimeline(selectedEntry) {
+    const rows = Array.from(streamEl.querySelectorAll('.lsa-row'));
+    if (rows.length < 2) return '';
+    const entries = rows.map(r => r._entry).filter(Boolean);
+    const total = entries.length;
+    const BINS = 30;
+    const binSize = Math.max(1, Math.floor(total / BINS));
+    const bins = [];
+    for (let i = 0; i < BINS; i++) {
+      const slice = entries.slice(i * binSize, (i + 1) * binSize);
+      if (!slice.length) continue;
+      let maxSev = 0;
+      let maxEntry = slice[0];
+      slice.forEach(e => {
+        const s = e.triage === 'investigate' ? 3 : e.triage === 'monitor' ? 2 : 1;
+        if (s > maxSev) { maxSev = s; maxEntry = e; }
+      });
+      bins.push({ sev: maxSev, entry: maxEntry, idx: i });
+    }
+    if (!bins.length) return '';
+
+    const W = 268;
+    const H = 80;
+    const barW = Math.max(4, Math.floor(W / bins.length) - 2);
+    const selectedIdx = entries.indexOf(selectedEntry);
+    const selectedBin = selectedIdx >= 0 ? Math.floor(selectedIdx / binSize) : -1;
+
+    const colors = { 3: '#f87171', 2: '#fbbf24', 1: '#00d4aa' };
+    const isDark = root.getAttribute('data-theme') !== 'light';
+    const dimColors = isDark
+      ? { 3: 'rgba(248,113,113,0.3)', 2: 'rgba(251,191,36,0.25)', 1: 'rgba(0,212,170,0.2)' }
+      : { 3: 'rgba(220,38,38,0.6)', 2: 'rgba(180,100,0,0.55)', 1: 'rgba(0,130,100,0.5)' };
+    const markerStroke = isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.7)';
+    const baselineStroke = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.1)';
+
+    let bars = '';
+    let tooltipRects = '';
+    bins.forEach((bin, i) => {
+      const x = i * (barW + 2);
+      const h = bin.sev === 3 ? H : bin.sev === 2 ? Math.floor(H * 0.6) : Math.floor(H * 0.3);
+      const y = H - h;
+      const isSelected = i === selectedBin;
+      const color = isSelected ? colors[bin.sev] : dimColors[bin.sev];
+      const ts = bin.entry.timestamp || '';
+      const label = bin.entry.triage_label || '';
+      const reason = bin.entry.triage_reason || '';
+      bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${color}" rx="1" />`;
+      tooltipRects += `<rect x="${x}" y="0" width="${barW + 2}" height="${H}" fill="transparent" class="lsa-tl-hit" data-ts="${ts}" data-label="${label}" data-sev="${bin.sev}" data-reason="${reason}" data-x="${x + Math.floor(barW / 2)}" />`;
+    });
+
+    const selectedX = selectedBin >= 0 ? selectedBin * (barW + 2) + Math.floor(barW / 2) : -1;
+    const marker = selectedX >= 0
+      ? `<line x1="${selectedX}" y1="0" x2="${selectedX}" y2="${H}" stroke="${markerStroke}" stroke-width="2" stroke-dasharray="4,3" />`
+      : '';
+
+    return `
+      <div class="lsa-timeline-wrap">
+        <div class="lsa-timeline-label">Each bar shows how serious the logs were at that point. The marked bar is the entry you selected.</div>
+        <div class="lsa-timeline-count">${total} entries in this session</div>
+        <div class="lsa-timeline-chart-wrap">
+          <svg class="lsa-timeline-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+            ${bars}
+            ${marker}
+            <line x1="0" y1="${H}" x2="${W}" y2="${H}" stroke="${baselineStroke}" stroke-width="1" />
+            ${tooltipRects}
+          </svg>
+          <div class="lsa-tl-tooltip" id="lsa-tl-tooltip" style="display:none"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  function wireTimeline(container) {
+    const svg = container.querySelector('.lsa-timeline-svg');
+    const tooltip = container.querySelector('#lsa-tl-tooltip');
+    if (!svg || !tooltip) return;
+    svg.querySelectorAll('.lsa-tl-hit').forEach(rect => {
+      rect.addEventListener('mouseenter', () => {
+        const label = rect.dataset.label;
+        const reason = rect.dataset.reason;
+        const ts = rect.dataset.ts
+          ? rect.dataset.ts.replace(/^\d{2}-\d{2}\s+/, '').replace(/\.\d+$/, '')
+          : '';
+        const sev = parseInt(rect.dataset.sev);
+        const cx = parseInt(rect.dataset.x);
+        const color = sev === 3 ? '#f87171' : sev === 2 ? '#fbbf24' : '#00d4aa';
+        tooltip.style.display = 'block';
+        tooltip.style.left = Math.min(cx, 180) + 'px';
+        tooltip.innerHTML =
+          `<div style="color:${color};font-weight:600;margin-bottom:3px">${label || 'Info'}</div>` +
+          (reason ? `<div style="color:#a1a1aa;font-size:9px;margin-bottom:2px">${reason}</div>` : '') +
+          (ts ? `<div style="color:#52525b;font-size:9px">Today at ${ts}</div>` : '');
+      });
+      rect.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
   /* INSPECTOR                                                           */
   /* ------------------------------------------------------------------ */
   function openInspector(entry) {
@@ -505,6 +645,28 @@
       <pre class="lsa-raw-pre" id="lsa-raw-pre" style="display:none">${escapeHtml(raw)}</pre>
     `;
 
+    const timelineHtml = buildTimeline(entry);
+    if (timelineHtml) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = timelineHtml;
+      const firstSection = inspBodyEl.querySelector('.lsa-isection');
+      if (firstSection) {
+        firstSection.parentNode.insertBefore(tmp.firstElementChild, firstSection);
+      }
+    }
+    wireTimeline(inspBodyEl);
+
+    if (window._timelineInterval) clearInterval(window._timelineInterval);
+    window._timelineInterval = setInterval(() => {
+      if (!ui.inspectorOpen) { clearInterval(window._timelineInterval); return; }
+      const wrap = inspBodyEl.querySelector('.lsa-timeline-wrap');
+      if (!wrap) return;
+      const d = document.createElement('div');
+      d.innerHTML = buildTimeline(ui.selectedEntry);
+      const n = d.querySelector('.lsa-timeline-wrap');
+      if (n) { wrap.replaceWith(n); wireTimeline(inspBodyEl); }
+    }, 3000);
+
     inspEl.querySelector('#lsa-insp-close').onclick = closeInspector;
 
     inspBodyEl.querySelector('#lsa-copy-msg').onclick = async () => {
@@ -530,6 +692,7 @@
   }
 
   function closeInspector() {
+    if (window._timelineInterval) { clearInterval(window._timelineInterval); window._timelineInterval = null; }
     ui.inspectorOpen = false;
     ui.selectedEntry = null;
     ui.autoScroll = true;

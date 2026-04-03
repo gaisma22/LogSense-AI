@@ -915,3 +915,86 @@
   color: #111827;
   box-shadow: 0 8px 24px rgba(0,0,0,0.14);
 }
+
+/* ========================================================= */
+/* TIMELINE                                                  */
+/* ========================================================= */
+
+.lsa-timeline-wrap {
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.lsa-timeline-label {
+  font-size: 10px;
+  color: #71717a;
+  margin-bottom: 3px;
+  line-height: 1.5;
+}
+
+.lsa-timeline-count {
+  font-size: 9px;
+  color: #52525b;
+  margin-bottom: 5px;
+}
+
+.lsa-timeline-chart-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.lsa-timeline-svg {
+  width: 100%;
+  height: 80px;
+  display: block;
+  background: rgba(255,255,255,0.02);
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.06);
+  cursor: crosshair;
+}
+
+.lsa-tl-tooltip {
+  position: absolute;
+  top: 4px;
+  pointer-events: none;
+  background: #0d0f12;
+  border: 1px solid #27272a;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 10px;
+  color: #e4e4e7;
+  line-height: 1.5;
+  white-space: normal;
+  z-index: 20;
+  max-width: 180px;
+  word-break: break-word;
+}
+
+.lsa-tl-hit {
+  cursor: crosshair;
+}
+
+#ls-android-terminal[data-theme="light"] .lsa-timeline-wrap {
+  border-top-color: rgba(0,0,0,0.06);
+}
+
+#ls-android-terminal[data-theme="light"] .lsa-timeline-svg {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.1);
+}
+
+#ls-android-terminal[data-theme="light"] .lsa-timeline-label {
+  color: #52525b;
+}
+
+#ls-android-terminal[data-theme="light"] .lsa-timeline-count {
+  color: #71717a;
+}
+
+#ls-android-terminal[data-theme="light"] .lsa-tl-tooltip {
+  background: #ffffff;
+  border-color: #e4e4e7;
+  color: #18181b;
+}
