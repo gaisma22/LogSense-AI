@@ -7,5 +7,8 @@ chardet==5.2.0
 # CSRF protection for upload and export routes
 flask-wtf==1.2.1
 
+# Optional: required for .evtx binary parsing
+evtx==0.8.9
+
 # test runner
 pytest==8.3.5

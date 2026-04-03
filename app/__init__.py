@@ -34,7 +34,7 @@ def create_app():
             print(f"{YELLOW}     This key is public. Set LOGSENSE_SECRET_KEY to a random string before sharing access.{RESET}\n", file=sys.stderr)
 
         print(f"{CYAN}{BOLD}  >> LogSense AI{RESET}{CYAN}  http://127.0.0.1:5000{RESET}\n\n", file=sys.stderr)
-    app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
+    app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024
     app.config["MAX_LINES"] = 20000
     from flask_wtf.csrf import CSRFProtect, CSRFError
     csrf = CSRFProtect(app)

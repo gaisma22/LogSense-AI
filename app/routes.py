@@ -54,7 +54,7 @@ from app.log_android.live_enricher import enrich_live_entry
 
 routes = Blueprint("routes", __name__)
 
-ALLOWED_EXT = {'.txt', '.log', '.xml'}
+ALLOWED_EXT = {'.txt', '.log', '.xml', '.evtx'}
 
 try:
     start_cleanup()
@@ -102,29 +102,56 @@ def upload_page():
         return redirect(url_for("routes.upload_page"))
 
     _, ext = os.path.splitext((fl.filename or '').lower())
-    if ext == '.evtx':
-        flash("Windows .evtx files are not supported directly. Open Event Viewer, right-click the log, select Save All Events As, and choose Text (Tab-delimited) or CSV format.")
-        return redirect(url_for("routes.upload_page"))
     if not allowed_file(fl.filename):
-        flash("Unsupported file type. Supported formats: .log, .txt, .xml")
+        flash("Unsupported file type. Supported formats: .log, .txt, .xml, .evtx")
         return redirect(url_for("routes.upload_page"))
 
     content = read_file_safely(fl)
-    if not content:
+    if not content and ext != '.evtx':
         flash("File unreadable.")
         return redirect(url_for("routes.upload_page"))
 
-    lines = enforce_line_limit(
-        [l for l in content.splitlines() if l.strip()],
-        current_app.config["MAX_LINES"]
-    )
+    if ext == '.evtx':
+        import tempfile, os as _os
+        from app.parser.evtx_parser import parse_evtx
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.evtx') as tmp:
+                fl.stream.seek(0)
+                tmp.write(fl.stream.read())
+                tmp_path = tmp.name
+            results = parse_evtx(tmp_path)
+        except Exception:
+            current_app.logger.exception("evtx parse failed")
+            flash("Failed to read .evtx file.")
+            return redirect(url_for("routes.upload_page"))
+        finally:
+            try:
+                _os.unlink(tmp_path)
+            except Exception:
+                pass
+    elif ext == '.xml':
+        from app.parser.xml_parser import looks_like_windows_event_xml, parse_windows_event_xml, parse_generic_xml
+        if looks_like_windows_event_xml(content):
+            results = parse_windows_event_xml(content)
+        else:
+            lines = enforce_line_limit(
+                [l for l in content.splitlines() if l.strip()],
+                current_app.config["MAX_LINES"]
+            )
+            results = parse_generic_xml(content) if content.strip().startswith('<') else analyze_lines(lines)
+    else:
+        from app.parser.windows_events import looks_like_windows_event_log, parse_windows_event_blocks
+        lines = enforce_line_limit(
+            [l for l in content.splitlines() if l.strip()],
+            current_app.config["MAX_LINES"]
+        )
+        if looks_like_windows_event_log(content):
+            results = parse_windows_event_blocks(content)
+        else:
+            results = analyze_lines(lines)
 
-    try:
-        results = analyze_lines(lines)
-    except Exception:
-        current_app.logger.exception("analyze_lines failed")
-        flash("Analysis failed.")
-        return redirect(url_for("routes.upload_page"))
+    if not results:
+        results = []
 
     sid = generate_session_id()
     save(sid, results, ttl=86400)

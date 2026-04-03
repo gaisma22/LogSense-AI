@@ -853,3 +853,14 @@ pre {
 .app-footer-github:hover {
     color: var(--c-primary);
 }
+
+.results-controls-wrap {
+    margin-bottom: var(--space-lg);
+}
+
+.results-controls-row1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}

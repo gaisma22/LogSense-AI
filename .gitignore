@@ -10,6 +10,7 @@ exports/
 dist/
 build/
 .env
-*.log
+logs/*.log
+server.log
 .DS_Store
 Thumbs.db

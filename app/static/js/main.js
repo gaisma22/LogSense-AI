@@ -12,6 +12,19 @@
     function applyTheme(t) {
       document.documentElement.setAttribute('data-theme', t || 'light');
       try { localStorage.setItem('theme', t); } catch (_) {}
+      const terminalThemeKey = 'ls-terminal-theme';
+      localStorage.setItem(terminalThemeKey, t);
+      const termRoot = document.getElementById('ls-android-terminal');
+      if (termRoot) termRoot.setAttribute('data-theme', t || 'light');
+      const btnTheme = termRoot?.querySelector('#lsa-theme');
+      if (btnTheme) btnTheme.textContent = (t === 'dark') ? 'Day' : 'Night';
+      if (termRoot) {
+        const insp = termRoot.querySelector('.lsa-inspector');
+        const wrap = insp?.querySelector('.lsa-timeline-wrap');
+        if (wrap && insp && !insp.classList.contains('lsa-hidden')) {
+            termRoot.dispatchEvent(new Event('lsa-rebuild-timeline'));
+        }
+      }
     }
     const saved = localStorage.getItem('theme') || 'light';
     applyTheme(saved);
@@ -301,7 +314,7 @@
 
     function valid(file) {
       const name = (file.name || '').toLowerCase();
-      if (!(name.endsWith('.txt') || name.endsWith('.log') || name.endsWith('.xml'))) {
+      if (!(name.endsWith('.txt') || name.endsWith('.log') || name.endsWith('.xml') || name.endsWith('.evtx'))) {
         if (uploadError) uploadError.textContent = 'Unsupported file type.';
         return false;
       }
@@ -365,10 +378,11 @@
     let entries = JSON.parse(initial.textContent || '[]');
 
     const filterSel = $('filter-severity'); const searchInp = $('results-search'); const toggleSimpl = $('toggle-simplified');
-    const exportBtn = $('export-btn'); const exportOptions = $('export-options'); const collapseAll = $('collapse-all'); const expandAll = $('expand-all'); const downloadOriginal = $('download-original');
+    const exportBtn = $('export-btn'); const exportOptions = $('export-options'); const collapseAll = $('collapse-all'); const downloadOriginal = $('download-original');
     const resultsControls = document.querySelector('.results-controls'); const summaryRow = document.querySelector('.summary-row');
 
     let simplified = false; let currentFilter = 'moderate'; let currentQuery = '';
+    let currentThreshold = 'normal';
 
     if (entries.length === 0) {
       if (resultsControls) resultsControls.classList.add('hidden');
@@ -428,6 +442,29 @@
       return filtered;
     }
 
+    function applyThreshold(items) {
+        if (currentThreshold === 'normal') return items;
+        return items.map(item => {
+            const base = item._baseSeverity || item.severity;
+            const confidence = item.confidence || 0;
+            let severity = base;
+
+            if (currentThreshold === 'strict') {
+                // Promote moderate to high if confidence >= 0.6
+                if (base === 'moderate' && confidence >= 0.6) severity = 'high';
+                // Promote low to moderate if confidence >= 0.7
+                if (base === 'low' && confidence >= 0.7) severity = 'moderate';
+            } else if (currentThreshold === 'relaxed') {
+                // Demote high to moderate if confidence < 0.7
+                if (base === 'high' && confidence < 0.7) severity = 'moderate';
+                // Demote moderate to low if confidence < 0.5
+                if (base === 'moderate' && confidence < 0.5) severity = 'low';
+            }
+
+            return { ...item, severity, _baseSeverity: base };
+        });
+    }
+
     function simplifyText(text) {
       let t = text;
       t = t.replace(/\b([a-z0-9_]+\.)+([a-z0-9_]+)\b/gi, (m, p1, p2) => p2);
@@ -438,7 +475,7 @@
     }
 
     function render() {
-      const list = filterItems();
+      const list = applyThreshold(filterItems());
       renderSummary(list);
       const grouped = groupBySection(list);
       const container = document.createElement('div');
@@ -480,11 +517,24 @@
     if (filterSel) filterSel.value = 'moderate';
 
     if (filterSel) filterSel.addEventListener('change', () => { currentFilter = filterSel.value; render(); });
+    const thresholdSel = $('threshold-level');
+    if (thresholdSel) thresholdSel.addEventListener('change', () => { currentThreshold = thresholdSel.value; render(); });
     if (searchInp) { let tmo = null; searchInp.addEventListener('input', () => { clearTimeout(tmo); tmo = setTimeout(() => { currentQuery = searchInp.value; render(); }, 220); }); }
     if (toggleSimpl) toggleSimpl.addEventListener('click', () => { simplified = !simplified; toggleSimpl.textContent = simplified ? 'Show Raw' : 'Show Simplified'; render(); });
 
-    if (collapseAll) collapseAll.addEventListener('click', () => { document.querySelectorAll('.section-body').forEach(b => b.classList.add('hidden')); document.querySelectorAll('.section-toggle').forEach(btn => btn.textContent = 'Expand'); });
-    if (expandAll) expandAll.addEventListener('click', () => { document.querySelectorAll('.section-body').forEach(b => b.classList.remove('hidden')); document.querySelectorAll('.section-toggle').forEach(btn => btn.textContent = 'Collapse'); });
+    let allCollapsed = false;
+    if (collapseAll) collapseAll.addEventListener('click', () => {
+        allCollapsed = !allCollapsed;
+        if (allCollapsed) {
+            document.querySelectorAll('.section-body').forEach(b => b.classList.add('hidden'));
+            document.querySelectorAll('.section-toggle').forEach(btn => btn.textContent = 'Expand');
+            collapseAll.textContent = 'Expand all';
+        } else {
+            document.querySelectorAll('.section-body').forEach(b => b.classList.remove('hidden'));
+            document.querySelectorAll('.section-toggle').forEach(btn => btn.textContent = 'Collapse');
+            collapseAll.textContent = 'Collapse all';
+        }
+    });
 
     if (downloadOriginal) downloadOriginal.addEventListener('click', () => {
       const blob = new Blob([entries.map(e => e.entry).join('\n')], { type: 'text/plain;charset=utf-8' });
