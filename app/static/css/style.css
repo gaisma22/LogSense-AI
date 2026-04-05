@@ -285,28 +285,11 @@ button:disabled {
 #device-select {
     padding: 4px 8px;
     border-radius: 4px;
-    background: var(--c-surface);
+    background: var(--c-bg-card);
     color: var(--c-text);
     border: 1px solid var(--c-border);
 }
 
-/* Log output window */
-.log-preview {
-    height: 380px;
-    overflow-y: scroll;
-    background: #000;
-    color: #e0e0e0;
-    padding: var(--space-md);
-    border-radius: var(--radius);
-    border: 1px solid var(--c-border);
-    font-family: monospace;
-    white-space: pre-wrap;
-    margin-top: var(--space-md);
-}
-
-.log-preview.hidden {
-    display: none;
-}
 
 /* Button groups */
 .action-row {
@@ -593,6 +576,13 @@ pre {
     background: var(--c-bg-card);
     transition: box-shadow 0.12s, transform 0.06s;
     margin-bottom: 6px;
+    overflow: hidden;
+}
+
+.raw-text {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .item-meta {
@@ -602,14 +592,6 @@ pre {
     gap: 12px;
 }
 
-.result-item[data-severity="low"] {
-}
-
-.result-item[data-severity="moderate"] {
-}
-
-.result-item[data-severity="high"] {
-}
 
 .item-expanded {
     display: block;
@@ -628,8 +610,7 @@ pre {
 ------------------------------------ */
 
 /* Card refinements (non-destructive to base card styling) */
-.feature-card,
-.guide-block {
+.feature-card {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     border-radius: 12px;
     border: 1px solid var(--c-border);
@@ -651,7 +632,6 @@ pre {
 /* Paragraph readability adjustments */
 .page-section p,
 .feature-card p,
-.guide-block p,
 .bullet-list li,
 .faq-item p {
     line-height: 1.65;
@@ -709,14 +689,12 @@ pre {
 }
 
 /* Prepare subtle lift without layout shift */
-.feature-card,
-.guide-block {
+.feature-card {
     transition: transform 0.15s ease;
 }
 
 /* Slight lift hover (subtle, stable) */
-.feature-card:hover,
-.guide-block:hover {
+.feature-card:hover {
     transform: translateY(-2px);
 }
 

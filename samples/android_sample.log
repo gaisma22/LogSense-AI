@@ -1,0 +1,45 @@
+03-15 02:14:31.332 I ActivityManager: Start proc 8821:com.android.systemui/u0a52 for service com.android.systemui/.SystemUIService
+03-15 02:14:33.441 I PackageManager: Installed com.google.android.gms v221814022 for user 0
+03-15 02:14:35.882 D WifiManager: Connected to SSID:HomeNetwork BSSID:aa:bb:cc:dd:ee:ff freq:5180 rssi:-52
+03-15 02:14:37.334 I BatteryStatsService: Battery level 78% charging:false health:GOOD
+03-15 02:14:39.112 W InputMethodManager: startInputInner called with no current focus: com.android.launcher3
+03-15 02:14:41.441 I ActivityManager: Killing 12341:com.facebook.katana/u0a213 (adj 906): empty for 1801s
+03-15 02:14:43.882 E AndroidRuntime: FATAL EXCEPTION: main
+03-15 02:14:43.883 E AndroidRuntime: Process: com.instagram.android, PID: 14231
+03-15 02:14:43.884 E AndroidRuntime: java.lang.NullPointerException: Attempt to invoke virtual method 'android.view.View android.view.View.findViewById(int)' on a null object reference
+03-15 02:14:43.885 E AndroidRuntime:   at com.instagram.android.feed.FeedFragment.onCreateView(FeedFragment.java:241)
+03-15 02:14:43.886 E AndroidRuntime:   at android.app.Fragment.performCreateView(Fragment.java:2600)
+03-15 02:14:43.887 E AndroidRuntime:   at android.app.FragmentManagerImpl.moveToState(FragmentManager.java:1274)
+03-15 02:14:45.334 I ActivityManager: Process com.instagram.android (pid 14231) has died: fg TOP
+03-15 02:14:47.112 W Binder: Slow Binder: binder transaction 1242ms, interface=android.app.IActivityManager, code=95
+03-15 02:14:49.441 E SELinux: avc: denied { read } for pid=9823 comm="com.unknown.spy" name="mem" dev="proc" scontext=u:r:untrusted_app:s0:c512,c768 tcontext=u:object_r:proc_mem:s0 tclass=file permissive=0
+03-15 02:14:51.882 E SELinux: avc: denied { write } for pid=9823 comm="com.unknown.spy" name="kmsg" dev="virtual" scontext=u:r:untrusted_app:s0:c512,c768 tcontext=u:object_r:kmsg_device:s0 tclass=chr_file permissive=0
+03-15 02:14:53.334 E SELinux: avc: denied { ptrace } for pid=9823 comm="com.unknown.spy" scontext=u:r:untrusted_app:s0:c512,c768 tcontext=u:r:system_app:s0 tclass=process permissive=0
+03-15 02:14:55.112 W PackageManager: Permission denied: com.unknown.spy requested android.permission.READ_CONTACTS without user consent
+03-15 02:14:57.441 W PackageManager: Permission denied: com.unknown.spy requested android.permission.ACCESS_FINE_LOCATION without user consent
+03-15 02:14:59.882 W PackageManager: Permission denied: com.unknown.spy requested android.permission.RECORD_AUDIO without user consent
+03-15 02:15:01.334 W PackageManager: Permission denied: com.unknown.spy requested android.permission.READ_SMS without user consent
+03-15 02:15:03.112 W ActivityManager: Background start not allowed: service Intent { cmp=com.unknown.spy/.SurveillanceService } to user 0 callerApp=ProcessRecord{4a8f331 9823:com.unknown.spy/u0a341}
+03-15 02:15:05.441 W BatteryStatsService: Battery drain anomaly: 18% in 12 minutes. Culprit: com.unknown.spy (uid 10341)
+03-15 02:15:07.882 E ActivityManager: ANR in com.whatsapp
+03-15 02:15:07.883 E ActivityManager: PID: 9341
+03-15 02:15:07.884 E ActivityManager: Reason: Input dispatching timed out (com.whatsapp/com.whatsapp.HomeActivity, Waiting to send non-key event because the touched window has not finished processing certain input events that were previously delivered to it)
+03-15 02:15:07.885 E ActivityManager: Load: 14.3 / 11.2 / 8.7
+03-15 02:15:09.334 W Binder: Binder call failed: pid=9341 uid=10187 TRANSACTION_FAILED
+03-15 02:15:11.112 E Binder: binder: 9823:9823 transaction failed 29189, size 4096-0
+03-15 02:15:13.441 W Choreographer: Skipped 124 frames! The application may be doing too much work on its main thread.
+03-15 02:15:15.882 E kernel: [42841.334521] lowmemorykiller: Killing 'com.android.chrome' (9821), adj 906, to free 131072kB on behalf of 'kswapd0' (54) because cache 19768kB is below limit 23040kB for oom_score_adj 0
+03-15 02:15:17.334 E MediaServer: mediaserver crashed, signal 11 (SIGSEGV), fault addr 0xdeadbaad pid 1821
+03-15 02:15:19.112 W ActivityManager: Timeout executing service: ServiceRecord{8a3f221 u0 com.google.android.gms/.backup.BackupTransportService}
+03-15 02:15:21.441 W NetworkMonitor: Network validation failed: SSID HomeNetwork captiveportal probe returned HTTP 302 to 45.33.32.156
+03-15 02:15:23.882 W NetworkMonitor: Packet loss 34% on wlan0. RTT avg: 2341ms
+03-15 02:15:25.334 E DhcpClient: DHCP timeout: no offer received for 30s on wlan0
+03-15 02:15:27.112 I ActivityManager: Force stopping com.unknown.spy appid=10341 user=0: from pid 1000
+03-15 02:15:29.441 W PackageManager: Uninstall blocked: com.unknown.spy is a device administrator app. Deactivate device admin first.
+03-15 02:15:31.882 E Watchdog: Blocked in monitor com.android.server.am.ActivityManagerService on foreground thread (android.fg), 30s
+03-15 02:15:33.334 E Watchdog: !@Sync 1821 com.android.server.am.ActivityManagerService android.fg
+03-15 02:15:35.112 E kernel: [42865.441231] lowmemorykiller: Killing 'com.android.systemui' (1182), adj 100, to free 262144kB
+03-15 02:15:37.441 E AndroidRuntime: FATAL EXCEPTION: OkHttp Dispatcher
+03-15 02:15:37.442 E AndroidRuntime: Process: com.unknown.spy, PID: 9823
+03-15 02:15:37.443 E AndroidRuntime: javax.net.ssl.SSLHandshakeException: java.security.cert.CertPathValidatorException: Trust anchor for certification path not found.
+03-15 02:15:37.444 E AndroidRuntime:   at com.android.org.conscrypt.OpenSSLSocketImpl.startHandshake(OpenSSLSocketImpl.java:390)

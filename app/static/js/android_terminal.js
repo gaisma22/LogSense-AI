@@ -67,7 +67,7 @@
     selectedEntry: null,
     logCount: 0,
     position: { x: null, y: null },
-    theme: localStorage.getItem(THEME_KEY) || 'dark',
+    theme: localStorage.getItem('theme') || localStorage.getItem(THEME_KEY) || 'dark',
     serial: null,
     deviceModel: 'Android'
   };
@@ -234,7 +234,8 @@
   /* THEME                                                               */
   /* ------------------------------------------------------------------ */
   btnTheme.onclick = () => {
-    ui.theme = ui.theme === 'dark' ? 'light' : 'dark';
+    const current = root.getAttribute('data-theme') || 'dark';
+    ui.theme = current === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', ui.theme);
     localStorage.setItem(THEME_KEY, ui.theme);
     btnTheme.textContent = ui.theme === 'dark' ? 'Day' : 'Night';
@@ -519,7 +520,7 @@
     if (!bins.length) return '';
 
     const W = 268;
-    const H = 80;
+    const H = 120;
     const barW = Math.max(4, Math.floor(W / bins.length) - 2);
     const selectedIdx = entries.indexOf(selectedEntry);
     const selectedBin = selectedIdx >= 0 ? Math.floor(selectedIdx / binSize) : -1;
@@ -552,18 +553,24 @@
       ? `<line x1="${selectedX}" y1="0" x2="${selectedX}" y2="${H}" stroke="${markerStroke}" stroke-width="2" stroke-dasharray="4,3" />`
       : '';
 
+    const gridLines = [0.25, 0.5, 0.75].map(p => {
+      const y = Math.floor(H * (1 - p));
+      const gridColor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
+      return `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${gridColor}" stroke-width="1" />`;
+    }).join('');
+
     return `
       <div class="lsa-timeline-wrap">
         <div class="lsa-timeline-label">Each bar shows how serious the logs were at that point. The marked bar is the entry you selected.</div>
         <div class="lsa-timeline-count">${total} entries in this session</div>
         <div class="lsa-timeline-chart-wrap">
           <svg class="lsa-timeline-svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+            ${gridLines}
             ${bars}
             ${marker}
             <line x1="0" y1="${H}" x2="${W}" y2="${H}" stroke="${baselineStroke}" stroke-width="1" />
             ${tooltipRects}
           </svg>
-          <div class="lsa-tl-tooltip" id="lsa-tl-tooltip" style="display:none"></div>
         </div>
       </div>
     `;
@@ -571,24 +578,41 @@
 
   function wireTimeline(container) {
     const svg = container.querySelector('.lsa-timeline-svg');
-    const tooltip = container.querySelector('#lsa-tl-tooltip');
-    if (!svg || !tooltip) return;
+    if (!svg) return;
+    let tooltip = document.getElementById('lsa-tl-tooltip-global');
+    if (!tooltip) {
+      tooltip = document.createElement('div');
+      tooltip.id = 'lsa-tl-tooltip-global';
+      tooltip.className = 'lsa-tl-tooltip';
+      tooltip.style.display = 'none';
+      document.body.appendChild(tooltip);
+    }
     svg.querySelectorAll('.lsa-tl-hit').forEach(rect => {
-      rect.addEventListener('mouseenter', () => {
+      rect.addEventListener('mouseenter', e => {
         const label = rect.dataset.label;
         const reason = rect.dataset.reason;
         const ts = rect.dataset.ts
           ? rect.dataset.ts.replace(/^\d{2}-\d{2}\s+/, '').replace(/\.\d+$/, '')
           : '';
         const sev = parseInt(rect.dataset.sev);
-        const cx = parseInt(rect.dataset.x);
         const color = sev === 3 ? '#f87171' : sev === 2 ? '#fbbf24' : '#00d4aa';
-        tooltip.style.display = 'block';
-        tooltip.style.left = Math.min(cx, 180) + 'px';
+        const isDark = root.getAttribute('data-theme') !== 'light';
+        tooltip.style.background = isDark ? '#0d0f12' : '#ffffff';
+        tooltip.style.borderColor = isDark ? '#27272a' : '#e4e4e7';
+        tooltip.style.color = isDark ? '#e4e4e7' : '#18181b';
         tooltip.innerHTML =
-          `<div style="color:${color};font-weight:600;margin-bottom:3px">${label || 'Info'}</div>` +
-          (reason ? `<div style="color:#a1a1aa;font-size:9px;margin-bottom:2px">${reason}</div>` : '') +
-          (ts ? `<div style="color:#52525b;font-size:9px">Today at ${ts}</div>` : '');
+          `<div style="color:${color};font-weight:600;margin-bottom:3px">${escapeHtml(label || 'Info')}</div>` +
+          (reason ? `<div style="color:${isDark ? '#a1a1aa' : '#52525b'};font-size:9px;margin-bottom:2px">${escapeHtml(reason)}</div>` : '') +
+          (ts ? `<div style="color:${isDark ? '#52525b' : '#71717a'};font-size:9px">Today at ${escapeHtml(ts)}</div>` : '');
+        tooltip.style.display = 'block';
+        const th = tooltip.offsetHeight;
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top = (e.clientY - th - 12) + 'px';
+      });
+      rect.addEventListener('mousemove', e => {
+        const th = tooltip.offsetHeight;
+        tooltip.style.left = (e.clientX + 14) + 'px';
+        tooltip.style.top = (e.clientY - th - 12) + 'px';
       });
       rect.addEventListener('mouseleave', () => {
         tooltip.style.display = 'none';
@@ -614,25 +638,25 @@
 
     inspBodyEl.innerHTML = `
       <div class="lsa-isection lsa-itriage lsa-itriage-${entry.triage || 'ignore'}">
-        <div class="lsa-itriage-label">${entry.triage_label || 'Safe to ignore'}</div>
-        ${entry.triage_reason ? `<div class="lsa-itriage-reason">${entry.triage_reason}</div>` : ''}
-        ${entry.action ? `<div class="lsa-itriage-action">${entry.action}</div>` : ''}
+        <div class="lsa-itriage-label">${escapeHtml(entry.triage_label || 'Safe to ignore')}</div>
+        ${entry.triage_reason ? `<div class="lsa-itriage-reason">${escapeHtml(entry.triage_reason)}</div>` : ''}
+        ${entry.action ? `<div class="lsa-itriage-action">${escapeHtml(entry.action)}</div>` : ''}
       </div>
 
       ${entry.what_happened ? `
       <div class="lsa-isection">
         <div class="lsa-ilabel">What happened</div>
-        <div class="lsa-ivalue">${entry.what_happened}</div>
+        <div class="lsa-ivalue">${escapeHtml(entry.what_happened)}</div>
       </div>` : ''}
 
       <div class="lsa-isection">
         <div class="lsa-ilabel">Component</div>
-        <div class="lsa-ivalue">${entry.tag || 'unknown'}</div>
+        <div class="lsa-ivalue">${escapeHtml(entry.tag || 'unknown')}</div>
       </div>
 
       <div class="lsa-isection">
         <div class="lsa-ilabel">When</div>
-        <div class="lsa-ivalue">${entry.timestamp || 'unknown'}</div>
+        <div class="lsa-ivalue">${entry.timestamp ? 'Today at ' + escapeHtml(entry.timestamp.replace(/^\d{2}-\d{2}\s+/, '').replace(/\.\d+$/, '')) : 'unknown'}</div>
       </div>
 
       <div class="lsa-isection">
@@ -649,9 +673,13 @@
     if (timelineHtml) {
       const tmp = document.createElement('div');
       tmp.innerHTML = timelineHtml;
-      const firstSection = inspBodyEl.querySelector('.lsa-isection');
-      if (firstSection) {
-        firstSection.parentNode.insertBefore(tmp.firstElementChild, firstSection);
+      const sections = inspBodyEl.querySelectorAll('.lsa-isection');
+      const afterTriage = Array.from(sections).find(s => !s.classList.contains('lsa-itriage'));
+      const anchor = afterTriage || null;
+      if (anchor) {
+        anchor.parentNode.insertBefore(tmp.firstElementChild, anchor);
+      } else {
+        inspBodyEl.appendChild(tmp.firstElementChild);
       }
     }
     wireTimeline(inspBodyEl);
@@ -693,6 +721,8 @@
 
   function closeInspector() {
     if (window._timelineInterval) { clearInterval(window._timelineInterval); window._timelineInterval = null; }
+    const globalTooltip = document.getElementById('lsa-tl-tooltip-global');
+    if (globalTooltip) globalTooltip.style.display = 'none';
     ui.inspectorOpen = false;
     ui.selectedEntry = null;
     ui.autoScroll = true;
@@ -823,9 +853,9 @@
       row._entry = entry;
 
       row.innerHTML =
-        '<div class="lsa-ts">' + (entry.timestamp || '') + '</div>' +
-        '<div class="lsa-lvl">' + lvlChar + '</div>' +
-        '<div class="lsa-tag">' + (entry.tag || '') + '</div>' +
+        '<div class="lsa-ts">' + escapeHtml(entry.timestamp || '') + '</div>' +
+        '<div class="lsa-lvl">' + escapeHtml(lvlChar) + '</div>' +
+        '<div class="lsa-tag">' + escapeHtml(entry.tag || '') + '</div>' +
         '<div class="lsa-msg">' + escapeHtml(entry.message || entry.raw || '') + '</div>';
 
       frag.appendChild(row);

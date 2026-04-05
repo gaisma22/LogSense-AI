@@ -1,9 +1,11 @@
 from __future__ import annotations
+import re
 import subprocess
 import time
 from typing import Generator, Dict, Any, Optional
 from app.log_android import adb_daemon
 from app.log_android.adb_device import adb_path
+from app.log_android.live_enricher import enrich_live_entry
 
 
 def _map_level(entry: Dict[str, Any]) -> Dict[str, Any]:
@@ -27,7 +29,6 @@ def _parse_logcat_line(line: str) -> Dict[str, Any]:
         "message": raw,
         "repeat_count": 1,
     }
-    import re
     if m := re.search(r'(\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\.\d{3})', raw):
         entry["timestamp"] = m.group(1)
     if m := re.search(r'\b([VDIWEF])\/([^\s:(]+)', raw):
@@ -65,7 +66,6 @@ def stream_logcat(serial: Optional[str] = None, fresh: bool = False) -> Generato
                         continue
                     entry = _parse_logcat_line(line)
                     entry = _map_level(entry)
-                    from app.log_android.live_enricher import enrich_live_entry
                     entry = enrich_live_entry(entry)
                     yield entry
             except GeneratorExit:

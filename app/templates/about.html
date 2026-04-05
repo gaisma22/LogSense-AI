@@ -2,56 +2,60 @@
 {% block content %}
 
 <div class="page-container">
-
     <section class="page-section">
         <h1>About LogSense AI</h1>
         <p class="text-muted">
-            LogSense AI is a local log analysis tool with Android live monitoring. It runs entirely on your machine. No cloud, no accounts.
+            LogSense AI is a local log analysis tool with live Android monitoring. It runs entirely on your machine. No cloud, no accounts, no telemetry.
         </p>
     </section>
-
     <section class="page-section">
-        <h2>Core Features</h2>
+        <h2>Features</h2>
         <div class="feature-grid">
             <div class="feature-card">
                 <h3>Log Analysis</h3>
-                <p class="text-muted">Upload a log file and get line-by-line severity classification, pattern matching, and export.</p>
+                <p class="text-muted">Upload <code>.log</code>, <code>.txt</code>, <code>.xml</code>, or <code>.evtx</code> files. The parser classifies entries by severity, groups them by section, and explains what each entry means.</p>
             </div>
-
             <div class="feature-card">
-                <h3>Android ADB Monitoring</h3>
-                <p class="text-muted">Connect an Android device via USB and stream live logcat output directly into the browser.</p>
+                <h3>Windows Event Logs</h3>
+                <p class="text-muted">Reads <code>.evtx</code> binary files directly. Maps Event IDs to known patterns covering security, system, network, and auth events.</p>
             </div>
-
             <div class="feature-card">
-                <h3>Responsive UI</h3>
-                <p class="text-muted">Works in dark and light mode. Built with plain HTML, CSS, and JS. No frameworks.</p>
+                <h3>Android Live Monitoring</h3>
+                <p class="text-muted">Streams live logcat output from a connected Android device via ADB. Entries are triaged in real time with hover summaries and a detail inspector.</p>
             </div>
-
+            <div class="feature-card">
+                <h3>Detail Inspector</h3>
+                <p class="text-muted">Click any live log entry to pause the stream and inspect it. Shows triage verdict, reason, component, timestamp, and a session activity chart.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Threshold Control</h3>
+                <p class="text-muted">Adjust how aggressively entries are classified on the results page. Strict, Normal, and Relaxed modes tune the signal-to-noise ratio for different use cases.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Fully Offline</h3>
+                <p class="text-muted">No API keys, no cloud storage, no tracking. Analysis stays on your machine.</p>
+            </div>
         </div>
     </section>
-
     <section class="page-section">
-        <h2>Architecture Overview</h2>
-
+        <h2>Architecture</h2>
         <ul class="bullet-list">
             <li>Flask backend with blueprint routing</li>
-            <li>Rule-based log parser with pattern matching</li>
+            <li>Rule-based log parser with pattern matching and confidence scoring</li>
+            <li>Windows Event ID lookup table covering Security, System, Sysmon, Defender, AppLocker, PowerShell, RDP, and BitLocker events</li>
+            <li>EVTX binary parser using the evtx package</li>
             <li>ADB device layer with lazy daemon startup</li>
             <li>Server-Sent Events for live log streaming</li>
             <li>In-RAM session store with automatic cleanup</li>
         </ul>
     </section>
-
     <section class="page-section">
         <h2>Purpose</h2>
         <p class="text-muted">
-            Most people never look at logs because they’re hard to read. LogSense AI shows what stands out. It does not recommend actions, deletions, or fixes.
+            Most people never look at logs because they're hard to read. LogSense AI shows what stands out. It does not recommend actions, deletions, or fixes.
         </p>
     </section>
-
 </div>
-
 <style>
     .page-container {
         width: 100%;
@@ -59,31 +63,27 @@
         margin: 0 auto;
         padding: var(--space-xl) var(--space-lg);
     }
-
-    /* Keep page-section spacing untouched (strict condition) */
-
-    /* Apply global dynamic card/grid UI by removing unsafe overrides */
     .feature-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: var(--space-lg);
         margin-top: var(--space-md);
     }
-
     .feature-card {
         background: var(--c-bg-card);
         padding: var(--space-md);
         border-radius: var(--radius);
-        box-shadow: var(--shadow);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         border: 1px solid var(--c-border);
-        transition: transform 0.15s ease;
+        transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
         font-size: 0.85rem;
+        will-change: transform;
+        cursor: default;
     }
-
     .feature-card:hover {
-        transform: translateY(-2px); /* global micro-lift */
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.18);
     }
-
     .bullet-list {
         margin-top: var(--space-md);
         line-height: 1.8;

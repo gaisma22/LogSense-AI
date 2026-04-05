@@ -1,0 +1,43 @@
+2025-03-15 02:14:31.332201-0500 kernel Boot args: rootdev=disk0s1 no32exec
+2025-03-15 02:14:33.441221-0500 launchd com.apple.xpc.launchd: service com.apple.SystemStarter exited with code 0
+2025-03-15 02:14:35.882300-0500 configd Network configuration changed. en0 connected to 192.168.1.1
+2025-03-15 02:14:37.112043-0500 loginwindow Login Window Application Started
+2025-03-15 02:14:39.334521-0500 loginwindow User alex logged in from console.
+2025-03-15 02:14:41.441221-0500 kernel Sandbox: deny(1) file-read-data /private/etc/master.passwd
+2025-03-15 02:14:43.882300-0500 kernel Sandbox: deny(1) file-read-data /private/etc/sudoers
+2025-03-15 02:14:51.112043-0500 tccd AUTHREQ_RESULT: app=com.unknown.dropper, kTCCServiceMicrophone: denied
+2025-03-15 02:14:53.334521-0500 tccd AUTHREQ_RESULT: app=com.unknown.dropper, kTCCServiceCamera: denied
+2025-03-15 02:14:55.441221-0500 tccd AUTHREQ_RESULT: app=com.unknown.dropper, kTCCServiceAddressBook: denied
+2025-03-15 02:14:57.882300-0500 syspolicyd Gatekeeper rejected unsigned app at /Applications/AdobeFlashInstaller.app: not notarized, not signed
+2025-03-15 02:15:01.112043-0500 kernel Sandbox: deny(1) file-write-create /private/var/tmp/.DS_Store_hidden_payload
+2025-03-15 02:15:03.334521-0500 kernel Sandbox: deny(2) mach-lookup com.apple.security.syspolicy
+2025-03-15 02:15:05.441221-0500 loginwindow Login failed: root login attempt rejected. Account disabled.
+2025-03-15 02:15:07.882300-0500 SecurityAgent Authorization failed: privilege escalation attempt by alex denied.
+2025-03-15 02:15:09.112043-0500 kernel diskimages-helper: disk image /Users/alex/Downloads/FlashInstaller.dmg mounted
+2025-03-15 02:15:11.334521-0500 kernel Sandbox: deny(1) file-write-create /Library/LaunchDaemons/com.unknown.plist
+2025-03-15 02:15:13.441221-0500 kernel Sandbox: deny(1) file-write-create /Library/LaunchAgents/com.unknown.agent.plist
+2025-03-15 02:15:15.882300-0500 systemstats ALERT: unexpected process spawned: /private/tmp/osascript_runner
+2025-03-15 02:15:17.112043-0500 kernel Possible malware signature detected in /private/tmp/FlashInstaller.pkg
+2025-03-15 02:15:19.334521-0500 com.apple.security.policyengine Policy denied execution of unsigned binary /private/tmp/inject
+2025-03-15 02:15:21.441221-0500 kernel Sandbox: deny(1) network-outbound /private/var/run/mDNSResponder
+2025-03-15 02:15:23.882300-0500 mDNSResponder ERROR: Unexpected DNS response from 45.33.32.156: SERVFAIL
+2025-03-15 02:15:25.112043-0500 nsurlsessiond TIC TCP Conn Failed [1:0x7f9a2b000000]: 3:-9816 Err(-9816) to host 45.33.32.156
+2025-03-15 02:15:27.334521-0500 kernel AppleIntelCPUPowerManagement: Thermal level 4 reached, throttling CPU
+2025-03-15 02:15:29.441221-0500 coreservicesd WARNING: high memory usage in process com.apple.WebKit.WebContent (RSS: 2.1GB)
+2025-03-15 02:15:31.882300-0500 kernel disk0s2: I/O error.
+2025-03-15 02:15:33.112043-0500 kernel disk0s2: 0xe00002ca (UNDEFINED).
+2025-03-15 02:15:35.334521-0500 kernel AppleUSBXHCI: overcurrent condition detected on USB port 3
+2025-03-15 02:15:37.441221-0500 com.apple.mdworker Spotlight indexing failed: insufficient permissions on /Volumes/External
+2025-03-15 02:15:39.882300-0500 kernel Sandbox: deny(1) file-read-data /private/var/db/auth.db
+2025-03-15 02:15:41.112043-0500 kernel Sandbox: deny(1) file-write-unlink /private/etc/sudoers
+2025-03-15 02:15:43.334521-0500 configd SCNetworkReachability: 45.33.32.156 is reachable via en0
+2025-03-15 02:15:45.441221-0500 osascript osascript: execution of /private/tmp/osascript_runner failed: script not permitted
+2025-03-15 02:15:47.882300-0500 kernel Sandbox: deny(4) signal(SIGKILL) target com.apple.securityd
+2025-03-15 02:15:49.112043-0500 securityd securityd: unexpected restart, was killed
+2025-03-15 02:15:51.334521-0500 kernel com.apple.kext.AppleMatch: kext rejected: not in allowed list
+2025-03-15 02:15:53.441221-0500 kernel Sandbox: deny(1) file-read-data /private/var/db/dslocal/nodes/Default/users/root.plist
+2025-03-15 02:15:55.882300-0500 com.apple.softwareupdate ERROR: failed to contact software update server: NSURLErrorDomain -1001
+2025-03-15 02:15:57.112043-0500 loginwindow User alex logged out.
+2025-03-15 02:15:59.334521-0500 kernel nvme0: Unrecoverable error in queue 1
+2025-03-15 02:16:01.441221-0500 kernel panic(cpu 0 caller 0xffffff80002d4f5a): Unresponsive wake event
+2025-03-15 02:16:01.441222-0500 kernel Backtrace: 0xffffff80002d4f5a 0xffffff8000294321 0xffffff80002941cc

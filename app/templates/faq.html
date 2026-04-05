@@ -2,78 +2,82 @@
 {% block content %}
 
 <div class="container" style="max-width:960px;margin:0 auto;">
-
     <div class="card">
-
         <h2>FAQ</h2>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
             <h3>What is LogSense AI?</h3>
             <p class="text-muted">
-                A local tool for reading system logs. Upload a log file to get structured analysis, or connect an Android device to monitor live logcat output.
+                A local tool for reading system logs. Upload a log file to get structured analysis, or connect an Android device to monitor live logcat output. Runs entirely on your machine.
             </p>
         </div>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
-            <h3>What types of logs can I upload?</h3>
+            <h3>What file types can I upload?</h3>
             <p class="text-muted">
-                Files with .txt, .log, or .xml extensions. The parser handles Windows, Linux, macOS, and Android log formats.
+                <code>.log</code>, <code>.txt</code>, <code>.xml</code>, and <code>.evtx</code> files up to 64MB. The parser handles Windows Event Logs, Linux syslog, macOS unified logs, and Android logcat output. Windows <code>.evtx</code> binary files are parsed directly without needing to export them first.
             </p>
         </div>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
             <h3>How do I get log files from my device?</h3>
             <p class="text-muted">
-                Each OS has its own export method. The Instructions page covers the steps for each platform.
+                Windows: open Event Viewer, right-click a log, and save as <code>.evtx</code> or text. Linux: logs are in <code>/var/log</code>. macOS: use Console.app or the <code>log</code> command. The Instructions page has the full steps.
             </p>
         </div>
-
+        <div class="faq-item" style="margin-top: var(--space-lg);">
+            <h3>What does the threshold control do?</h3>
+            <p class="text-muted">
+                It adjusts how aggressively entries are classified. <strong>Strict</strong> promotes more entries to high severity. <strong>Relaxed</strong> demotes lower-confidence matches. <strong>Normal</strong> is the default and reflects the parser's built-in confidence scores.
+            </p>
+        </div>
+        <div class="faq-item" style="margin-top: var(--space-lg);">
+            <h3>What does the chart in the detail panel show?</h3>
+            <p class="text-muted">
+                Log activity across the current session. Each bar represents a group of entries colored by severity. The marked bar is the entry you selected. Hover any bar to see the triage verdict and what was happening at that point.
+            </p>
+        </div>
         <div class="faq-item" style="margin-top: var(--space-lg);">
             <h3>Do I need ADB?</h3>
             <p class="text-muted">
                 Only for live Android monitoring. File upload works without ADB.
             </p>
         </div>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
-            <h3>Which systems support ADB monitoring?</h3>
+            <h3>Which systems support live monitoring?</h3>
             <p class="text-muted">
-                Linux, macOS, and Windows. ADB must be installed and accessible from the terminal. On Linux: sudo apt install adb. On macOS: brew install android-platform-tools. On Windows: download from the Android developer site.
+                Linux, macOS, and Windows. ADB must be installed and in your PATH. On Linux: <code>sudo apt install adb</code>. On macOS: <code>brew install android-platform-tools</code>. On Windows: download Platform Tools from the Android developer site and add the folder to PATH.
             </p>
         </div>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
-            <h3>My phone isn’t showing up. What should I check?</h3>
+            <h3>My phone isn't showing up. What should I check?</h3>
             <p class="text-muted">
-                Check that USB debugging is on and the device is authorized. On Windows you may need OEM USB drivers. On Linux you may need udev rules. Try running adb devices in a terminal to check if the device is visible.
+                Check that USB debugging is on and the phone shows as authorized when you run <code>adb devices</code>. On Windows you may need OEM USB drivers. On Linux you may need udev rules. Try a different cable or port if the device drops frequently.
             </p>
         </div>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
-            <h3>Can I filter Android logs?</h3>
+            <h3>Can I filter live logs?</h3>
             <p class="text-muted">
-                Yes. The live terminal has level buttons (V/D/I/W/E/F) and a tag/keyword filter. Warning and Error are on by default.
+                Yes. The terminal has level buttons (<strong>V D I W E F</strong>) and a tag or keyword filter. Warning and Error are on by default. Turn on Info or Debug if you need more detail.
             </p>
         </div>
-
         <div class="faq-item" style="margin-top: var(--space-lg);">
             <h3>Can I save live logs?</h3>
             <p class="text-muted">
-                Yes. The Save button in the terminal exports all visible entries as a .txt file.
+                Yes. The <strong>Save</strong> button exports all visible entries as a <code>.txt</code> file.
             </p>
         </div>
-
+        <div class="faq-item" style="margin-top: var(--space-lg);">
+            <h3>Does it work on Windows with PowerShell?</h3>
+            <p class="text-muted">
+                Use Command Prompt, not PowerShell. PowerShell blocks the venv activation script by default. In CMD, activate with <code>venv\Scripts\activate</code> and run <code>python app.py</code> as normal.
+            </p>
+        </div>
         <div class="faq-item" style="margin-top: var(--space-lg);">
             <h3>The live stream keeps dropping. Why?</h3>
             <p class="text-muted">
-                Usually a cable or USB power issue. Try a different cable or port. You can also run adb devices in a terminal to check if the connection is stable.
+                Usually a cable or USB power issue. Try a different cable or port. Run <code>adb devices</code> in a terminal to check if the connection is stable.
             </p>
         </div>
-
     </div>
-
 </div>
-
 <style>
 .faq-item { margin-bottom: var(--space-md); }
 .faq-item h3 { font-size: 0.9rem; }

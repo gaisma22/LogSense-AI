@@ -4,10 +4,7 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
-import logging
 from typing import List, Dict, Optional, Any
-
-LOG = logging.getLogger("app.log_android.adb_device")
 
 # ---------------------------------------------------------------------------
 # adb helpers
@@ -222,13 +219,9 @@ def get_device_info(serial: Optional[str]) -> Dict[str, Any]:
 
     return result
 
-def get_device_props(serial: Optional[str]) -> Dict[str, Any]:
-    return get_device_info(serial)
-
 __all__ = [
     "adb_path",
     "adb_exists",
     "list_devices",
     "get_device_info",
-    "get_device_props",
 ]

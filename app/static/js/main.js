@@ -10,12 +10,12 @@
   (function themeModule() {
     const themeToggle = $('theme-toggle');
     function applyTheme(t) {
-      document.documentElement.setAttribute('data-theme', t || 'light');
+      document.documentElement.setAttribute('data-theme', t || 'dark');
       try { localStorage.setItem('theme', t); } catch (_) {}
       const terminalThemeKey = 'ls-terminal-theme';
       localStorage.setItem(terminalThemeKey, t);
       const termRoot = document.getElementById('ls-android-terminal');
-      if (termRoot) termRoot.setAttribute('data-theme', t || 'light');
+      if (termRoot) termRoot.setAttribute('data-theme', t || 'dark');
       const btnTheme = termRoot?.querySelector('#lsa-theme');
       if (btnTheme) btnTheme.textContent = (t === 'dark') ? 'Day' : 'Night';
       if (termRoot) {
@@ -26,11 +26,11 @@
         }
       }
     }
-    const saved = localStorage.getItem('theme') || 'light';
+    const saved = localStorage.getItem('theme') || 'dark';
     applyTheme(saved);
     if (themeToggle) {
       themeToggle.addEventListener('click', () => {
-        const cur = document.documentElement.getAttribute('data-theme') || 'light';
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
         const next = cur === 'dark' ? 'light' : 'dark';
         applyTheme(next);
       });
@@ -70,7 +70,7 @@
     }
 
     function setGuidance(t) {
-      if (guidance) guidance.textContent = t;
+      if (guidance) guidance.innerHTML = t;
     }
 
     function showDeviceInfo(dev) {
@@ -107,11 +107,6 @@
       if (btnDisconnect) btnDisconnect.classList.add('hidden');
     }
 
-    function enableAll() {
-      if (btnStart) btnStart.disabled = false;
-      if (btnStop) btnStop.disabled = false;
-      if (btnDisconnect) btnDisconnect.classList.remove('hidden');
-    }
 
     async function checkDevice() {
       try {
@@ -122,7 +117,14 @@
         if (!j || !j.adb_available) {
           setDot('off');
           setStatus('ADB not available');
-          setGuidance('ADB not found. Install Android Platform Tools: sudo apt install adb');
+          const ua = navigator.userAgent.toLowerCase();
+          if (ua.includes('win')) {
+              setGuidance('ADB not found. Download Platform Tools from <strong>developer.android.com</strong> and add to <strong>PATH</strong>.');
+          } else if (ua.includes('mac')) {
+              setGuidance('ADB not found. Run <code>brew install android-platform-tools</code> then restart the app.');
+          } else {
+              setGuidance('ADB not found. Run <code>sudo apt install adb</code> then restart the app.');
+          }
           if (deviceSelectRow) deviceSelectRow.classList.add('hidden');
           hideActionRow();
           clearDeviceInfo();
@@ -259,7 +261,7 @@
         try {
           if (currentSerial) {
             const csrf = document.querySelector('meta[name="csrf-token"]');
-            await fetch('/android/disconnect?serial=' + currentSerial, {
+            await fetch('/android/disconnect?serial=' + encodeURIComponent(currentSerial), {
               method: 'POST',
               headers: { 'X-CSRFToken': csrf ? csrf.getAttribute('content') : '' },
             });
@@ -291,13 +293,13 @@
     const zone = $('upload-zone'); if (!zone) return;
     const input = $('file-input'); const fileInfo = $('file-info'); const fName = $('fi-name'); const fSize = $('fi-size'); const fType = $('fi-type');
     const btnDiscard = $('btn-discard'); const uploadForm = $('upload-form'); const uploadError = $('upload-error');
-    const hiddenFileForSubmit = $('hidden-file-for-submit');
-
     function showFile(file) {
       if (!file) return;
       if (fName) fName.textContent = file.name;
       if (fSize) fSize.textContent = Math.round(file.size / 1024) + ' KB';
-      if (fType) fType.textContent = file.type || 'unknown';
+      const extMap = { 'log': 'text/plain', 'txt': 'text/plain', 'xml': 'text/xml', 'evtx': 'Windows Event Log' };
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (fType) fType.textContent = extMap[ext] || file.type || 'Unknown';
       if (fileInfo) fileInfo.classList.remove('hidden');
       if (btnDiscard) btnDiscard.classList.remove('hidden');
       if (uploadForm) uploadForm.classList.remove('hidden');
@@ -374,6 +376,15 @@
 
   /* RESULTS MODULE */
   (function resultsModule() {
+    function escapeHtml(s) {
+        if (!s) return '';
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
     const initial = $('initial-entries'); if (!initial) return;
     let entries = JSON.parse(initial.textContent || '[]');
 
@@ -482,7 +493,7 @@
       for (const sec of Object.keys(grouped)) {
         const items = grouped[sec];
         const sectionEl = document.createElement('div'); sectionEl.className = 'section'; sectionEl.setAttribute('data-section', sec);
-        const header = document.createElement('div'); header.className = 'section-header'; header.innerHTML = `<strong>${sec}</strong><span class="section-count">(${items.length})</span>`;
+        const header = document.createElement('div'); header.className = 'section-header'; header.innerHTML = `<strong>${escapeHtml(sec)}</strong><span class="section-count">(${items.length})</span>`;
         const toggleBtn = document.createElement('button'); toggleBtn.className = 'section-toggle btn-secondary'; toggleBtn.textContent = 'Collapse'; header.appendChild(toggleBtn); sectionEl.appendChild(header);
         const body = document.createElement('div'); body.className = 'section-body';
         items.forEach(it => {
@@ -498,7 +509,7 @@
           right.appendChild(explainBtn); right.appendChild(copyBtn);
           meta.appendChild(left); meta.appendChild(right);
           item.appendChild(meta);
-          const expanded = document.createElement('div'); expanded.className = 'item-expanded hidden'; expanded.innerHTML = `<div class="explanation"><strong>Explanation:</strong> ${simplified ? ((it.explanation || '').split('.')[0] + '.') || 'No explanation available.' : it.explanation || 'No explanation available.'}</div><div class="extra" style="margin-top:8px;color:var(--c-text-muted)"><strong>Raw:</strong> <code style="white-space:pre-wrap">${it.entry}</code></div>`;
+          const expanded = document.createElement('div'); expanded.className = 'item-expanded hidden'; expanded.innerHTML = `<div class="explanation"><strong>Explanation:</strong> ${simplified ? escapeHtml((it.explanation || '').split('.')[0] + '.') || 'No explanation available.' : escapeHtml(it.explanation || 'No explanation available.')}</div><div class="extra" style="margin-top:8px;color:var(--c-text-muted)"><strong>Raw:</strong> <code style="white-space:pre-wrap">${escapeHtml(it.raw_data || it.entry)}</code></div>`;
           item.appendChild(expanded);
           explainBtn.addEventListener('click', () => expanded.classList.toggle('hidden'));
           copyBtn.addEventListener('click', () => { navigator.clipboard.writeText(it.entry).then(() => { copyBtn.textContent = 'Copied'; setTimeout(() => copyBtn.textContent = 'Copy', 900); }); });

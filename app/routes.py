@@ -26,8 +26,8 @@ from flask import (
 
 from app.model.analyze_lines import analyze_lines
 from app.utils.session_store import (
-    generate_session_id, save, load, remove,
-    start_cleanup, clean_expired
+    generate_session_id, save, load,
+    start_cleanup,
 )
 
 # Android helpers

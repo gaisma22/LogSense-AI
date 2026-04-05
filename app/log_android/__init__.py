@@ -6,7 +6,6 @@ from .adb_device import (
     adb_path,
     list_devices,
     get_device_info,
-    get_device_props,
 )
 
 from .adb_stream import (
@@ -18,6 +17,5 @@ __all__ = [
     "adb_path",
     "list_devices",
     "get_device_info",
-    "get_device_props",
     "stream_logcat",
 ]

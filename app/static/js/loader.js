@@ -4,18 +4,18 @@ var loaderStartTime = null;
 var loaderMsgTimers = [];
 
 var loaderMessages = [
-    { text: 'Analyzing...',                              delay: 0 },
-    { text: 'Cooking...',                                delay: 2000 },
-    { text: 'Still cooking...',                          delay: 4000 },
-    { text: 'Buffering the aura...',                     delay: 6000 },
-    { text: 'Asking your logs nicely...',                delay: 8000 },
-    { text: 'Low-key waiting...',                        delay: 10000 },
-    { text: 'Main character energy loading...',          delay: 13000 },
-    { text: 'No cap, this file is quiet rn...',          delay: 16000 },
-    { text: "It's giving... nothing yet...",             delay: 19000 },
-    { text: "We're cooked. Try a smaller file.",         delay: 24000 },
-    { text: 'Still here. Almost certainly finishing up.', delay: 35000 },
-    { text: 'No really, still working.',                 delay: 50000 },
+    { text: 'Analyzing...',                               delay: 0 },
+    { text: 'Cooking...',                                 delay: 15000 },
+    { text: 'Still cooking...',                           delay: 30000 },
+    { text: 'Buffering the aura...',                      delay: 45000 },
+    { text: 'Asking your logs nicely...',                 delay: 60000 },
+    { text: 'Low-key waiting...',                         delay: 75000 },
+    { text: 'Main character energy loading...',           delay: 90000 },
+    { text: 'No cap, this file is quiet rn...',           delay: 105000 },
+    { text: "It's giving... nothing yet...",              delay: 120000 },
+    { text: 'Still here. Still working.',                 delay: 140000 },
+    { text: 'No really, still working.',                  delay: 160000 },
+    { text: "We're cooked. Try a smaller file.",          delay: 175000 },
 ];
 
 window.showLoader = function () {

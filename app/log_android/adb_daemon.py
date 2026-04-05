@@ -39,14 +39,6 @@ LV_MAP = {
     "F": "FATAL",
 }
 
-SEVERITY_RANK = {
-    "VERBOSE": 0,
-    "DEBUG": 1,
-    "INFO": 2,
-    "WARN": 3,
-    "ERROR": 4,
-    "FATAL": 5,
-}
 
 # ---------------------------------------------------------------------
 # Parsing helpers
@@ -189,7 +181,3 @@ def snapshot(since: int = 0):
         if seq > since:
             yield seq, item
 
-def current_seq() -> int:
-    """Return the current sequence number. Use as cursor to stream only new entries."""
-    with _lock:
-        return _seq

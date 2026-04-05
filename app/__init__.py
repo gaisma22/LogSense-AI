@@ -17,7 +17,7 @@ def create_app():
     # ---------------------------------------------------------
     # Basic config
     # ---------------------------------------------------------
-    secret = os.environ.get("LOGSENSE_SECRET_KEY", "logsense-demo-key")
+    secret = os.environ.get("LOGSENSE_SECRET_KEY", "dev-only-change-before-deploying")
     app.config["SECRET_KEY"] = secret
 
     import os as _os
@@ -29,7 +29,7 @@ def create_app():
         BOLD   = '\033[1m'
         RESET  = '\033[0m'
 
-        if secret == "logsense-demo-key":
+        if secret == "dev-only-change-before-deploying":
             print(f"\n{YELLOW}{BOLD}  !! Running with the default SECRET_KEY.{RESET}", file=sys.stderr)
             print(f"{YELLOW}     This key is public. Set LOGSENSE_SECRET_KEY to a random string before sharing access.{RESET}\n", file=sys.stderr)
 

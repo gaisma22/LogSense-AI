@@ -2,89 +2,106 @@
 {% block content %}
 
 <div class="page-content">
-
     <section class="page-section">
         <h1>How to Use LogSense AI</h1>
         <p class="text-muted">
-            Two modes: file upload for static logs, and live monitoring for connected Android devices.
+            Two modes: upload a log file for analysis, or connect an Android device for live monitoring.
         </p>
     </section>
-
     <section class="page-section">
         <h2>Log Analysis</h2>
-
         <div class="info-block">
             <h3>1. Upload a File</h3>
             <p class="text-muted">
-                Go to Upload. Drop or select a .log, .txt, or .xml file. Click Analyze.
+                Go to <strong>Upload</strong>. Drop or select a <code>.log</code>, <code>.txt</code>, <code>.xml</code>, or <code>.evtx</code> file. Max 64MB. Click <strong>Analyze</strong>.
             </p>
-
             <h3>2. Read the Results</h3>
             <p class="text-muted">
-                Results are grouped by section and severity. High severity entries show first by default.
+                Results are grouped by section and sorted by severity. Use the severity dropdown to filter by Errors, Warnings, or Info. Use the <strong>threshold control</strong> to adjust how strictly entries are classified. Strict flags more, Relaxed flags less.
             </p>
-
-            <h3>3. Filter and Search</h3>
+            <h3>3. Search and Export</h3>
             <p class="text-muted">
-                Use the severity filter to cut through noise. The search box matches against the raw log line and explanation.
-            </p>
-
-            <h3>4. Export</h3>
-            <p class="text-muted">
-                Export filtered results as TXT, CSV, or JSON. The Raw button downloads the original unmodified file.
+                The search box filters against the raw log line and explanation text. Export filtered results as TXT, CSV, or JSON using the <strong>Export</strong> button. <strong>Raw</strong> downloads the original file unchanged.
             </p>
         </div>
     </section>
-
     <section class="page-section">
-        <h2>Android Real-Time Monitoring</h2>
-
+        <h2>Windows Event Logs</h2>
         <div class="info-block">
-            <h3>1. Connect Your Device</h3>
+            <h3>Open Event Viewer</h3>
             <p class="text-muted">
-                Enable USB debugging on the phone. Connect via USB. Click Check Device on the home page.
+                Press <strong>Windows key + R</strong>, type <code>eventvwr</code>, press Enter. In the left panel, expand <strong>Windows Logs</strong>. You will find System, Application, Security, Setup, and Forwarded Events.
             </p>
-
-            <h3>2. Start Streaming</h3>
+            <h3>Which log to export</h3>
             <p class="text-muted">
-                Once the device shows as connected, click Start. The terminal opens as a floating overlay. Warning and Error entries show by default. Hover any row for a quick summary. Click a row to pause the stream and read the full detail in the side panel.
+                <strong>System</strong>: hardware issues, driver failures, service crashes.<br>
+                <strong>Application</strong>: app errors and crashes from installed software.<br>
+                <strong>Security</strong>: login attempts and access control events. Requires admin rights.
             </p>
-
-            <h3>3. Common Issues</h3>
+            <h3>Option A: Export as .evtx</h3>
+            <p class="text-muted">
+                Right-click any log. Select <strong>Save All Events As</strong>. Set file type to <strong>Event Files (*.evtx)</strong>. Save it anywhere. Upload the file on the Upload page.
+            </p>
+            <h3>Option B: Export as text</h3>
+            <p class="text-muted">
+                Same steps but set file type to <strong>Text (Tab-delimited) (*.txt)</strong>. Upload the resulting <code>.txt</code> file.
+            </p>
+        </div>
+    </section>
+    <section class="page-section">
+        <h2>Android Live Monitoring</h2>
+        <div class="info-block">
+            <h3>1. Start Streaming</h3>
+            <p class="text-muted">
+                Click <strong>Check Device</strong> on the home page. Once the device shows as connected, click <strong>Start</strong>. The terminal opens as a floating overlay. Warning and Error entries show by default.
+            </p>
+            <h3>2. Read the Stream</h3>
+            <p class="text-muted">
+                Each row shows the timestamp, level, tag, and message. Hover any row to see a quick triage summary. Click a row to pause the stream and open the detail panel.
+            </p>
+            <h3>3. Detail Panel</h3>
+            <p class="text-muted">
+                The panel shows the triage verdict, what the entry means, which component logged it, and when it was recorded. The chart below shows log activity across the current session. Each bar represents a group of entries colored by severity. The marked bar is the entry you selected. Hover any bar to see what was happening at that point.
+            </p>
+            <h3>4. Controls</h3>
+            <p class="text-muted">
+                <strong>Pause</strong> freezes the stream without closing it. <strong>Resume</strong> picks up where it left off. <strong>Save</strong> exports all visible entries as a <code>.txt</code> file. <strong>Minimize</strong> collapses the overlay to a pill so you can use other pages while monitoring continues.
+            </p>
+            <h3>5. Filters</h3>
+            <p class="text-muted">
+                Use the level buttons (<strong>V D I W E F</strong>) to show or hide entries by level. Warning and Error are on by default. Use the tag or keyword filter to narrow down to a specific component.
+            </p>
+            <h3>6. Common Issues</h3>
             <ul class="guide-list">
-                <li>USB debugging must be on in Developer Options</li>
-                <li>Tap Allow on the authorization prompt on the phone</li>
-                <li>Run adb devices in a terminal to verify the connection</li>
-                <li>ADB must be installed: sudo apt install adb on Linux</li>
+                <li>USB debugging must be on in Developer Options.</li>
+                <li>Tap <strong>Allow</strong> on the phone when the authorization prompt appears.</li>
+                <li>On Windows, OEM USB drivers may be required for the device to show up.</li>
+                <li>On Linux, you may need udev rules. Run <code>adb devices</code> to check.</li>
+                <li>If the stream keeps dropping, try a different cable or USB port.</li>
             </ul>
         </div>
     </section>
-
     <section class="page-section">
         <h2>Tips</h2>
         <ul class="guide-list">
-            <li>Large files take longer. Files over 10,000 lines may take a few seconds.</li>
-            <li>Filter to High or Moderate before exporting to keep reports focused.</li>
-            <li>In the live terminal, hover a log row to see a quick explanation. Click to pause the stream and inspect the full entry.</li>
-            <li>Use the level buttons to hide noise. Warning and Error are on by default. Turn on Info or Debug if you need more detail.</li>
-            <li>The Save button in the terminal exports all visible entries as a .txt file.</li>
+            <li>Files up to 64MB are supported. The parser caps at 20,000 lines to keep analysis fast.</li>
+            <li>Filter to <strong>High</strong> or <strong>Moderate</strong> before exporting to keep reports focused.</li>
+            <li>Use the threshold control to tune how aggressively entries are flagged.</li>
+            <li>Turn on <strong>I</strong> (Info) or <strong>D</strong> (Debug) in the terminal if Warning and Error alone are not enough.</li>
+            <li>The <strong>Pause</strong> button freezes the stream without closing it.</li>
             <li>Minimize the terminal to keep monitoring while you use other pages.</li>
         </ul>
     </section>
-
 </div>
-
 <style>
     .page-content {
         max-width: 960px;
         margin: var(--space-xl) auto;
         padding: 0 var(--space-lg);
     }
-
     .page-section {
         margin-bottom: var(--space-xl);
     }
-
     .info-block {
         background: var(--c-bg-card);
         border: 1px solid var(--c-border);
@@ -95,7 +112,6 @@
         margin-top: var(--space-md);
         font-size: 0.85rem;
     }
-
     .guide-list {
         margin-top: var(--space-md);
         padding-left: var(--space-lg);
